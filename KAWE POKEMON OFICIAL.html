@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAWE POKEMON</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0a0a0a;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .light {
+      background: #eaeaea;
+      color: #111;
+    }
+
+    header {
+      background: linear-gradient(90deg, #00ff88, #003322);
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+    }
+
+    .toggle {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background: #00ff88;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #00ff88;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ff8850;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-size: 24px;
+      color: #00ff88;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #00ff88;
+      color: black;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .fav {
+      background: gold;
+      margin-left: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #003322;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>KAWE POKEMON 🔥</header>
+
+<div class="topbar">
+  <input type="text" id="search" placeholder="Buscar jogo...">
+  <button class="toggle" onclick="toggleMode()">🌙</button>
+</div>
+
+<div class="container" id="games">
+
+  <!-- FIRE RED -->
+  <div class="card" data-name="pokemon fire red">
+    <div class="title">Pokémon Fire Red (Português)</div>
+    <p>📅 Criado: 2004</p>
+    <p>🚀 Lançamento: 29 de Janeiro de 2004</p>
+    <a href="https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file" target="_blank" class="btn">⬇️ Download</a>
+    <button class="btn fav" onclick="favoritar(this)">⭐</button>
+    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file')">📋 Copiar Link</button>
+  </div>
+
+  <!-- LEAF GREEN -->
+  <div class="card" data-name="pokemon leaf green">
+    <div class="title">Pokémon Leaf Green (Português)</div>
+    <p>📅 Criado: 2004</p>
+    <p>🚀 Lançamento: 29 de Janeiro de 2004</p>
+    <a href="https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file" target="_blank" class="btn">⬇️ Download</a>
+    <button class="btn fav" onclick="favoritar(this)">⭐</button>
+    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file')">📋 Copiar Link</button>
+  </div>
+
+  <!-- EMERALD -->
+  <div class="card" data-name="pokemon emerald">
+    <div class="title">Pokémon Emerald (Português)</div>
+    <p>📅 Criado: 2005</p>
+    <p>🚀 Lançamento: 2004</p>
+    <a href="https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file" target="_blank" class="btn">⬇️ Download</a>
+    <button class="btn fav" onclick="favoritar(this)">⭐</button>
+    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file')">📋 Copiar Link</button>
+  </div>
+
+  <!-- SAPPHIRE -->
+  <div class="card" data-name="pokemon sapphire">
+    <div class="title">Pokémon Sapphire (Português)</div>
+    <p>📅 Criado: 2002</p>
+    <p>🚀 Lançamento: 2002</p>
+    <a href="https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file" target="_blank" class="btn">⬇️ Download</a>
+    <button class="btn fav" onclick="favoritar(this)">⭐</button>
+    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file')">📋 Copiar Link</button>
+  </div>
+
+  <!-- RUBY -->
+  <div class="card" data-name="pokemon ruby">
+    <div class="title">Pokémon Ruby (Português)</div>
+    <p>📅 Criado: 2002</p>
+    <p>🚀 Lançamento: 2002</p>
+    <a href="https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file" target="_blank" class="btn">⬇️ Download</a>
+    <button class="btn fav" onclick="favoritar(this)">⭐</button>
+    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file')">📋 Copiar Link</button>
+  </div>
+
+</div>
+
+<footer>© 2026 KAWE POKEMON</footer>
+
+<script>
+  document.getElementById("search").addEventListener("keyup", function() {
+    let filtro = this.value.toLowerCase();
+    let jogos = document.querySelectorAll(".card");
+
+    jogos.forEach(jogo => {
+      let nome = jogo.dataset.name;
+      jogo.style.display = nome.includes(filtro) ? "block" : "none";
+    });
+  });
+
+  function toggleMode() {
+    document.body.classList.toggle("light");
+  }
+
+  function favoritar(btn) {
+    btn.innerText = "⭐ Salvo!";
+    alert("Adicionado aos favoritos!");
+  }
+
+  function copiarLink(link) {
+    navigator.clipboard.writeText(link);
+    alert("Link copiado!");
+  }
+</script>
+
+</body>
+</html>
