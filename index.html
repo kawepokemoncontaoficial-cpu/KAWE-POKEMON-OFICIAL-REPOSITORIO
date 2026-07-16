@@ -1,190 +1,359 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAWE POKEMON OFICIAL</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0a0a0a;
-      color: white;
-      transition: 0.3s;
-    }
-
-    .light {
-      background: #eaeaea;
-      color: #111;
-    }
-
-    header {
-      background: linear-gradient(90deg, #00ff88, #003322);
-      padding: 20px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 15px;
-    }
-
-    input {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      width: 200px;
-    }
-
-    .toggle {
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      background: #00ff88;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .card {
-      background: #111;
-      border: 1px solid #00ff88;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00ff8850;
-      margin-bottom: 20px;
-    }
-
-    .title {
-      font-size: 24px;
-      color: #00ff88;
-    }
-
-    .btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 15px;
-      background: #00ff88;
-      color: black;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .fav {
-      background: gold;
-      margin-left: 10px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #003322;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAWE POKEMON - Portal Oficial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+:root{--neon:#00ff88;--neon-soft:rgba(0,255,136,.3);--bg:#050a07;--panel:#0a1410;--card:#0f1d17;--border:rgba(0,255,136,.35);--text:#e8ffe8;--muted:#7a9d8a;--danger:#ff4757}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(ellipse at top,#0a2417 0%,#050a07 60%,#000 100%) fixed;color:var(--text);min-height:100vh}
+.font-display{font-family:'Press Start 2P',system-ui,sans-serif;letter-spacing:.03em}
+.neon-text{color:var(--neon);text-shadow:0 0 8px var(--neon-soft),0 0 20px var(--neon-soft)}
+.neon-glow{box-shadow:0 0 20px var(--neon-soft),0 0 40px var(--neon-soft)}
+.neon-border{border:1px solid var(--neon);box-shadow:0 0 12px var(--neon-soft),inset 0 0 12px rgba(0,255,136,.08)}
+svg{display:inline-block;vertical-align:middle}
+.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-sm{width:14px;height:14px}
+.icon-lg{width:28px;height:28px}
+.icon-xl{width:44px;height:44px}
+header{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header-left{display:flex;align-items:center;gap:8px}
+.btn-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--neon);cursor:pointer;transition:.2s}
+.btn-icon:hover{box-shadow:0 0 20px var(--neon-soft)}
+.btn-admin{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--neon);background:rgba(0,255,136,.1);color:var(--neon);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:.2s}
+.btn-admin:hover{background:var(--neon);color:#000;box-shadow:0 0 20px var(--neon-soft)}
+.brand{display:flex;align-items:center;gap:8px;font-family:'Press Start 2P',sans-serif;font-size:14px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);cursor:pointer;background:none;border:none}
+nav.desktop{display:none;gap:2px}
+@media(min-width:1024px){nav.desktop{display:flex}}
+nav.desktop button{padding:8px 10px;border-radius:6px;background:none;border:none;color:rgba(232,255,232,.8);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:.2s}
+nav.desktop button:hover{background:rgba(0,255,136,.1);color:var(--neon)}
+.menu-panel{border-top:1px solid var(--border);background:rgba(0,0,0,.95);display:none}
+.menu-panel.open{display:block}
+.menu-grid{max-width:1200px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+@media(min-width:640px){.menu-grid{grid-template-columns:repeat(3,1fr)}}
+.menu-grid button{display:flex;align-items:center;gap:8px;padding:14px;border-radius:8px;border:1px solid rgba(0,255,136,.3);background:rgba(0,0,0,.6);color:var(--neon);font-weight:600;font-size:13px;text-align:left;cursor:pointer;transition:.2s}
+.menu-grid button:hover{border-color:var(--neon);box-shadow:0 0 12px var(--neon-soft)}
+.hero{position:relative;padding:80px 16px;text-align:center;border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.3;background:radial-gradient(circle at 20% 30%,rgba(0,255,136,.4),transparent 40%),radial-gradient(circle at 80% 70%,rgba(0,200,120,.3),transparent 45%);pointer-events:none}
+.hero-content{max-width:1200px;margin:0 auto;position:relative}
+.hero-tag{font-family:'Press Start 2P',sans-serif;font-size:10px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:16px}
+h1{font-family:'Press Start 2P',sans-serif;font-size:32px;line-height:1.3;color:var(--neon);text-shadow:0 0 15px var(--neon-soft);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+@media(min-width:640px){h1{font-size:48px}}
+h1 .accent{color:#7fffb8}
+.hero-desc{margin:24px auto 0;max-width:600px;font-size:15px;color:rgba(232,255,232,.85)}
+.hero-buttons{margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.btn-primary,.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:.2s;text-decoration:none}
+.btn-primary{background:var(--neon);color:#000;box-shadow:0 0 20px var(--neon-soft)}
+.btn-primary:hover{transform:scale(1.05)}
+.btn-outline{background:rgba(0,0,0,.4);color:var(--neon);border:1px solid var(--neon)}
+.btn-outline:hover{background:rgba(0,255,136,.1)}
+.search-bar{border-bottom:1px solid rgba(0,255,136,.2);background:rgba(0,0,0,.4)}
+.search-inner{max-width:1200px;margin:0 auto;padding:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search-input{position:relative;flex:1;min-width:200px}
+.search-input svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(0,255,136,.7)}
+.search-input input{width:100%;padding:10px 16px 10px 40px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--text);font-size:14px;outline:none}
+.search-input input:focus{border-color:var(--neon);box-shadow:0 0 15px var(--neon-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 14px;border-radius:999px;border:1px solid rgba(0,255,136,.3);background:rgba(0,0,0,.4);color:rgba(232,255,232,.7);font-size:11px;font-weight:600;text-transform:uppercase;cursor:pointer;transition:.2s}
+.chip:hover,.chip.active{border-color:var(--neon);color:var(--neon)}
+.chip.active{background:var(--neon);color:#000;box-shadow:0 0 15px var(--neon-soft)}
+main{max-width:1200px;margin:0 auto;padding:40px 16px}
+section{margin-bottom:56px;scroll-margin-top:100px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:12px;margin-bottom:24px;border-bottom:1px solid var(--border)}
+.section-head h2{display:flex;align-items:center;gap:10px;font-family:'Press Start 2P',sans-serif;font-size:20px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft)}
+.section-head span{font-size:12px;color:var(--muted)}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.grid.games{grid-template-columns:1fr 1fr 1fr}}
+.card{display:flex;flex-direction:column;padding:20px;border-radius:12px;border:1px solid var(--border);background:rgba(15,29,23,.8);transition:.2s}
+.card:hover{border-color:var(--neon);box-shadow:0 0 12px var(--neon-soft)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.card-title{font-family:'Press Start 2P',sans-serif;font-size:13px;color:var(--neon)}
+.card-meta{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.card-desc{margin-top:8px;font-size:14px;color:rgba(232,255,232,.8)}
+.card-link{margin-top:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border-radius:8px;background:var(--neon);color:#000;font-weight:700;font-size:13px;text-decoration:none;transition:.2s}
+.card-link:hover{box-shadow:0 0 20px var(--neon-soft)}
+.star-btn{background:none;border:none;color:var(--neon);cursor:pointer;transition:.2s}
+.star-btn:hover{transform:scale(1.2)}
+.star-btn.fav svg{fill:var(--neon)}
+.alt-card{text-decoration:none;color:inherit}
+.about-card{padding:24px;border-radius:12px;border:1px solid var(--border);background:rgba(15,29,23,.8)}
+footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:24px;border-top:1px solid var(--border);background:rgba(0,0,0,.8);font-size:12px;color:var(--muted)}
+footer .neon-text{margin:0 4px}
+.modal-backdrop{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}
+.pin-box{width:100%;max-width:380px;padding:32px;border-radius:16px;border:2px solid var(--neon);background:#000;box-shadow:0 0 30px var(--neon-soft)}
+.pin-icon{margin:0 auto 12px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,255,136,.2);color:var(--neon)}
+.pin-title{text-align:center;font-family:'Press Start 2P',sans-serif;font-size:16px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:8px}
+.pin-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px}
+.pin-input{width:100%;padding:16px;margin-bottom:12px;text-align:center;font-family:'Press Start 2P',sans-serif;font-size:28px;letter-spacing:.6em;color:var(--neon);background:#000;border:2px solid rgba(0,255,136,.5);border-radius:8px;outline:none}
+.pin-input:focus{border-color:var(--neon);box-shadow:0 0 15px var(--neon-soft)}
+.pin-error{text-align:center;font-size:12px;color:var(--danger);margin-bottom:12px}
+.pin-submit{width:100%;padding:14px;background:var(--neon);color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer}
+.pin-submit:hover{box-shadow:0 0 20px var(--neon-soft)}
+.admin-panel{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column}
+.admin-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:2px solid var(--neon);box-shadow:0 0 20px var(--neon-soft)}
+.admin-title{display:flex;align-items:center;gap:12px}
+.admin-title h2{font-family:'Press Start 2P',sans-serif;font-size:14px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft)}
+.admin-title p{font-size:10px;color:var(--muted)}
+.btn-close{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--danger);background:rgba(255,71,87,.2);color:#fff;font-weight:700;cursor:pointer}
+.btn-close:hover{background:var(--danger)}
+.admin-body{flex:1;display:flex;overflow:hidden}
+.admin-side{width:220px;flex-shrink:0;padding:12px;border-right:1px solid var(--border);background:rgba(0,0,0,.8)}
+.admin-side button{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;margin-bottom:4px;border-radius:8px;background:none;border:none;color:rgba(232,255,232,.8);font-weight:600;font-size:14px;text-align:left;cursor:pointer;transition:.2s}
+.admin-side button:hover{background:rgba(0,255,136,.1);color:var(--neon)}
+.admin-side button.active{background:var(--neon);color:#000;box-shadow:0 0 15px var(--neon-soft)}
+.admin-main{flex:1;overflow-y:auto;padding:24px}
+.admin-card{padding:20px;border-radius:12px;border:1px solid var(--border);background:rgba(15,29,23,.6);margin-bottom:20px}
+.admin-card h3{display:flex;align-items:center;gap:8px;font-family:'Press Start 2P',sans-serif;font-size:12px;color:var(--neon);margin-bottom:16px}
+.form-grid{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+.form-grid input,.form-grid select,.form-grid textarea{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--text);font-size:14px;outline:none;font-family:inherit}
+.form-grid input:focus,.form-grid select:focus,.form-grid textarea:focus{border-color:var(--neon)}
+.form-grid textarea{grid-column:1/-1;resize:vertical}
+.btn-add{margin-top:16px;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--neon);color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer}
+.btn-add:hover{box-shadow:0 0 20px var(--neon-soft)}
+.list-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;margin-bottom:8px;border-radius:8px;border:1px solid rgba(0,255,136,.2);background:rgba(0,0,0,.4)}
+.list-item p:first-child{font-size:14px;font-weight:600;color:var(--neon)}
+.list-item p:last-child{font-size:12px;color:var(--muted)}
+.btn-danger{display:flex;align-items:center;gap:4px;padding:6px 12px;background:rgba(255,71,87,.2);color:#fff;font-size:12px;font-weight:700;border:none;border-radius:6px;cursor:pointer}
+.btn-danger:hover{background:var(--danger)}
+.user-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:12px;margin-bottom:8px;border-radius:8px;border:1px solid rgba(0,255,136,.2);background:rgba(0,0,0,.4)}
+.user-info{display:flex;align-items:center;gap:12px}
+.avatar{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,255,136,.2);color:var(--neon);font-weight:700}
+.avatar.banned{background:rgba(255,71,87,.3)}
+.user-actions{display:flex;gap:6px}
+.user-actions select{padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--text);font-size:12px}
+.btn-ban{padding:4px 12px;background:rgba(234,179,8,.2);color:#fde047;font-size:12px;font-weight:700;border:none;border-radius:6px;cursor:pointer}
+.btn-ban:hover{background:rgba(234,179,8,.4)}
+.security-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px;margin-bottom:12px;border-radius:8px;border:1px solid rgba(0,255,136,.2);background:rgba(0,0,0,.4);cursor:pointer}
+.security-row p:first-child{font-size:14px;font-weight:600;color:var(--neon)}
+.security-row p:last-child{font-size:12px;color:var(--muted);margin-top:2px}
+.security-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--neon)}
+.stats-grid{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:1024px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{padding:20px;text-align:center;border-radius:12px;border:1px solid var(--border);background:rgba(15,29,23,.6);box-shadow:0 0 12px var(--neon-soft)}
+.stat-card svg{color:var(--neon);margin:0 auto}
+.stat-card .val{margin-top:8px;font-family:'Press Start 2P',sans-serif;font-size:26px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft)}
+.stat-card .lbl{margin-top:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+</style>
 </head>
-
 <body>
 
-<header>KAWE POKEMON OFICIAL</header>
+<!-- SVG SPRITES -->
+<svg style="display:none">
+  <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-gamepad" viewBox="0 0 24 24"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M2 6l4 8 6-10 6 10 4-8v14H2z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+</svg>
 
-<div class="topbar">
-  <input type="text" id="search" placeholder="Buscar jogo...">
-  <button class="toggle" onclick="toggleMode()">🌙</button>
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <button class="btn-icon" id="menuBtn" aria-label="Menu"><svg class="icon" id="menuIcon"><use href="#i-menu"/></svg></button>
+      <button class="btn-admin" onclick="openPin()"><svg class="icon icon-sm"><use href="#i-lock"/></svg> Admin</button>
+    </div>
+    <button class="brand" onclick="go('inicio')">KAWE POKEMON <svg class="icon icon-sm"><use href="#i-flame"/></svg></button>
+    <nav class="desktop" id="navDesktop"></nav>
+  </div>
+  <div class="menu-panel" id="menuPanel"><div class="menu-grid" id="menuGrid"></div></div>
+</header>
+
+<section id="inicio" class="hero">
+  <div class="hero-content">
+    <p class="hero-tag">PORTAL OFICIAL</p>
+    <h1>KAWE <span class="accent">POKEMON</span> <svg class="icon icon-xl" style="color:var(--neon)"><use href="#i-flame"/></svg></h1>
+    <p class="hero-desc">Jogos, filmes, curtas, livros e desenhos Pokémon reunidos em um só lugar — em português.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" onclick="go('jogos')"><svg class="icon"><use href="#i-gamepad"/></svg> Ver Jogos</button>
+      <button class="btn-outline" onclick="go('posts')"><svg class="icon"><use href="#i-news"/></svg> Posts</button>
+    </div>
+  </div>
+</section>
+
+<div class="search-bar">
+  <div class="search-inner">
+    <div class="search-input"><svg class="icon"><use href="#i-search"/></svg><input id="searchInput" placeholder="Buscar..."></div>
+    <div class="chips" id="chips"></div>
+  </div>
 </div>
 
-<div class="container" id="games">
+<main id="mainContent"></main>
 
-  <!-- FIRE RED -->
-  <div class="card" data-name="pokemon fire red">
-    <div class="title">Pokémon Fire Red (Português)</div>
-    <p>📅 Criado: 2004</p>
-    <p>🚀 Lançamento: 29 de Janeiro de 2004</p>
-    <a href="https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file" target="_blank" class="btn">⬇️ Download</a>
-    <button class="btn fav" onclick="favoritar(this)">⭐</button>
-    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file')">📋 Copiar Link</button>
-  </div>
+<footer>© 2026 <span class="neon-text">KAWE POKEMON</span> — Feito com <svg class="icon icon-sm" style="color:var(--neon)"><use href="#i-heart"/></svg></footer>
 
-  <!-- LEAF GREEN -->
-  <div class="card" data-name="pokemon leaf green">
-    <div class="title">Pokémon Leaf Green (Português)</div>
-    <p>📅 Criado: 2004</p>
-    <p>🚀 Lançamento: 29 de Janeiro de 2004</p>
-    <a href="https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file" target="_blank" class="btn">⬇️ Download</a>
-    <button class="btn fav" onclick="favoritar(this)">⭐</button>
-    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file')">📋 Copiar Link</button>
-  </div>
-
-  <!-- EMERALD -->
-  <div class="card" data-name="pokemon emerald">
-    <div class="title">Pokémon Emerald (Português)</div>
-    <p>📅 Criado: 2005</p>
-    <p>🚀 Lançamento: 2004</p>
-    <a href="https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file" target="_blank" class="btn">⬇️ Download</a>
-    <button class="btn fav" onclick="favoritar(this)">⭐</button>
-    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file')">📋 Copiar Link</button>
-  </div>
-
-  <!-- SAPPHIRE -->
-  <div class="card" data-name="pokemon sapphire">
-    <div class="title">Pokémon Sapphire (Português)</div>
-    <p>📅 Criado: 2002</p>
-    <p>🚀 Lançamento: 2002</p>
-    <a href="https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file" target="_blank" class="btn">⬇️ Download</a>
-    <button class="btn fav" onclick="favoritar(this)">⭐</button>
-    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file')">📋 Copiar Link</button>
-  </div>
-
-  <!-- RUBY -->
-  <div class="card" data-name="pokemon ruby">
-    <div class="title">Pokémon Ruby (Português)</div>
-    <p>📅 Criado: 2002</p>
-    <p>🚀 Lançamento: 2002</p>
-    <a href="https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file" target="_blank" class="btn">⬇️ Download</a>
-    <button class="btn fav" onclick="favoritar(this)">⭐</button>
-    <button class="btn" onclick="copiarLink('https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file')">📋 Copiar Link</button>
-  </div>
-
+<div class="modal-backdrop" id="pinModal" style="display:none" onclick="if(event.target===this)closePin()">
+  <form class="pin-box" onsubmit="return submitPin(event)">
+    <div class="pin-icon"><svg class="icon icon-lg"><use href="#i-lock"/></svg></div>
+    <h3 class="pin-title">ACESSO ADMIN</h3>
+    <p class="pin-sub">Digite a senha de 4 dígitos</p>
+    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" class="pin-input" id="pinInput" placeholder="----" autocomplete="off">
+    <p class="pin-error" id="pinError" style="display:none">Senha incorreta</p>
+    <button type="submit" class="pin-submit">ENTRAR</button>
+  </form>
 </div>
 
-<footer>© 2026 KAWE POKEMON</footer>
+<div class="admin-panel" id="adminPanel" style="display:none">
+  <div class="admin-top">
+    <div class="admin-title">
+      <svg class="icon icon-lg" style="color:var(--neon)"><use href="#i-crown"/></svg>
+      <div><h2>PAINEL ADMIN</h2><p>KAWE POKEMON</p></div>
+    </div>
+    <button class="btn-close" onclick="closeAdmin()"><svg class="icon icon-sm"><use href="#i-x"/></svg> Sair</button>
+  </div>
+  <div class="admin-body">
+    <aside class="admin-side" id="adminSide"></aside>
+    <div class="admin-main" id="adminMain"></div>
+  </div>
+</div>
 
 <script>
-  document.getElementById("search").addEventListener("keyup", function() {
-    let filtro = this.value.toLowerCase();
-    let jogos = document.querySelectorAll(".card");
+const NAV=[{id:'inicio',label:'Início'},{id:'sobre',label:'Sobre Nós'},{id:'creditos',label:'Créditos'},{id:'posts',label:'Posts'},{id:'filmes',label:'Filmes'},{id:'curtas',label:'Curtas'},{id:'jogos',label:'Jogos'},{id:'livros',label:'Livros'},{id:'desenhos',label:'Desenhos'},{id:'sites-alt',label:'Sites Alternativos'}];
+const CATS=['posts','filmes','curtas','jogos','livros','desenhos'];
+const ALT=[{name:'POKEBAT',url:'https://www.pokebat.com',desc:'Batalhas Pokémon online e comunidade PT-BR.'},{name:'DSPOKETUBER',url:'https://www.youtube.com/@DSPokeTuber',desc:'Canal dedicado a conteúdo Pokémon.'}];
+const DEFAULTS=[
+  {id:'1',title:'Pokémon Fire Red (PT-BR)',category:'jogos',date:'2004-01-29',description:'Clássico da geração 3, em português.',link:'https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file'},
+  {id:'2',title:'Pokémon Leaf Green (PT-BR)',category:'jogos',date:'2004-01-29',description:'A dupla verde do Fire Red.',link:'https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file'},
+  {id:'3',title:'Pokémon Emerald (PT-BR)',category:'jogos',date:'2005-01-01',description:'Hoenn completo, em português.',link:'https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file'},
+  {id:'4',title:'Pokémon Sapphire (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file'},
+  {id:'5',title:'Pokémon Ruby (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file'},
+  {id:'6',title:'Bem-vindo ao KAWE POKEMON!',category:'posts',date:'2026-01-01',description:'Novo portal repaginado com tema verde e preto.'}
+];
+const DEFAULT_USERS=[{id:'u1',name:'KAWE',role:'admin'},{id:'u2',name:'Ash',role:'user'},{id:'u3',name:'Misty',role:'editor'}];
+const PWD='2011';
 
-    jogos.forEach(jogo => {
-      let nome = jogo.dataset.name;
-      jogo.style.display = nome.includes(filtro) ? "block" : "none";
-    });
-  });
+let items=JSON.parse(localStorage.getItem('kawe.items')||'null')||DEFAULTS;
+let users=JSON.parse(localStorage.getItem('kawe.users')||'null')||DEFAULT_USERS;
+let favs=JSON.parse(localStorage.getItem('kawe.favs')||'[]');
+let sec=JSON.parse(localStorage.getItem('kawe.sec')||'null')||{twoFactor:false,loginAlerts:true,autoLock:true,pinRotation:false};
+let search='',activeCat='all',adminTab='posts';
 
-  function toggleMode() {
-    document.body.classList.toggle("light");
+function save(){localStorage.setItem('kawe.items',JSON.stringify(items));localStorage.setItem('kawe.users',JSON.stringify(users));localStorage.setItem('kawe.favs',JSON.stringify(favs));localStorage.setItem('kawe.sec',JSON.stringify(sec))}
+function icon(id,cls='icon'){return `<svg class="${cls}"><use href="#i-${id}"/></svg>`}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function go(id){document.getElementById('menuPanel').classList.remove('open');document.getElementById('menuIcon').outerHTML='<svg class="icon" id="menuIcon"><use href="#i-menu"/></svg>';const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'})}
+
+function renderNav(){
+  document.getElementById('navDesktop').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${s.label}</button>`).join('');
+  document.getElementById('menuGrid').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${icon('chevron-right','icon icon-sm')} ${s.label}</button>`).join('');
+}
+function renderChips(){
+  const cats=['all',...CATS];
+  document.getElementById('chips').innerHTML=cats.map(c=>`<button class="chip${activeCat===c?' active':''}" onclick="setCat('${c}')">${c==='all'?'Todos':cap(c)}</button>`).join('');
+}
+function setCat(c){activeCat=c;renderChips();renderMain()}
+
+function itemCard(i){
+  const isFav=favs.includes(i.id);
+  return `<article class="card">
+    <div class="card-head">
+      <h3 class="card-title">${esc(i.title)}</h3>
+      <button class="star-btn${isFav?' fav':''}" onclick="toggleFav('${i.id}')" aria-label="Favoritar">${icon('star')}</button>
+    </div>
+    ${i.date?`<p class="card-meta">${icon('calendar','icon icon-sm')} ${esc(i.date)}</p>`:''}
+    ${i.description?`<p class="card-desc">${esc(i.description)}</p>`:''}
+    ${i.link?`<a class="card-link" href="${esc(i.link)}" target="_blank" rel="noopener">${icon('download','icon icon-sm')} Abrir</a>`:''}
+  </article>`;
+}
+
+function toggleFav(id){favs=favs.includes(id)?favs.filter(f=>f!==id):[...favs,id];save();renderMain()}
+
+function renderMain(){
+  const q=search.toLowerCase().trim();
+  const filtered=items.filter(i=>(activeCat==='all'||i.category===activeCat)&&(!q||i.title.toLowerCase().includes(q)||(i.description||'').toLowerCase().includes(q)));
+  let html='';
+  for(const cat of CATS){
+    if(activeCat!=='all'&&activeCat!==cat)continue;
+    const list=filtered.filter(i=>i.category===cat);
+    html+=`<section id="${cat}"><div class="section-head"><h2>${cap(cat)}</h2><span>${list.length} itens</span></div>`;
+    if(list.length===0)html+=`<p style="color:var(--muted);font-size:14px">Nada por aqui ainda.</p>`;
+    else html+=`<div class="grid${cat==='jogos'?' games':''}">${list.map(itemCard).join('')}</div>`;
+    html+='</section>';
   }
+  html+=`<section id="sites-alt"><div class="section-head"><h2>${icon('globe','icon icon-lg')} Sites Alternativos</h2><span>${ALT.length} sites</span></div><div class="grid">${ALT.map(s=>`<a class="card alt-card" href="${s.url}" target="_blank" rel="noopener"><div class="card-head"><h3 class="card-title">${icon('globe','icon icon-sm')} ${s.name}</h3>${icon('external','icon icon-sm')}</div><p class="card-desc">${s.desc}</p><span class="card-meta" style="margin-top:12px">${s.url}</span></a>`).join('')}</div></section>`;
+  html+=`<section id="sobre"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:16px">Sobre Nós</h2><div class="about-card neon-border"><p style="font-size:14px;line-height:1.6">O <strong style="color:var(--neon)">KAWE POKEMON</strong> é um portal fã dedicado a compartilhar a paixão pelo universo Pokémon: jogos traduzidos, filmes, curtas, livros e desenhos. Feito por fãs, para fãs.</p></div></section>`;
+  html+=`<section id="creditos"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:16px">Créditos</h2><div class="grid"><div class="about-card"><h3 style="font-family:'Press Start 2P';font-size:12px;color:var(--neon);margin-bottom:8px">Criação</h3><p style="font-size:14px">KAWE — idealizador e curador.</p></div><div class="about-card"><h3 style="font-family:'Press Start 2P';font-size:12px;color:var(--neon);margin-bottom:8px">Fontes</h3><p style="font-size:14px">Comunidade Pokémon PT-BR e colaboradores.</p></div></div></section>`;
+  document.getElementById('mainContent').innerHTML=html;
+}
 
-  function favoritar(btn) {
-    btn.innerText = "⭐ Salvo!";
-    alert("Adicionado aos favoritos!");
-  }
+document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value;renderMain()});
+document.getElementById('menuBtn').addEventListener('click',()=>{
+  const p=document.getElementById('menuPanel');const open=p.classList.toggle('open');
+  document.getElementById('menuIcon').outerHTML=`<svg class="icon" id="menuIcon"><use href="#i-${open?'x':'menu'}"/></svg>`;
+});
 
-  function copiarLink(link) {
-    navigator.clipboard.writeText(link);
-    alert("Link copiado!");
+function openPin(){document.getElementById('pinModal').style.display='flex';setTimeout(()=>document.getElementById('pinInput').focus(),50)}
+function closePin(){document.getElementById('pinModal').style.display='none';document.getElementById('pinInput').value='';document.getElementById('pinError').style.display='none'}
+function submitPin(e){e.preventDefault();const v=document.getElementById('pinInput').value;if(v===PWD){closePin();openAdmin()}else{document.getElementById('pinError').style.display='block';document.getElementById('pinInput').value=''}return false}
+
+const ADMIN_TABS=[{id:'posts',label:'Conteúdo',icon:'file'},{id:'users',label:'Usuários',icon:'users'},{id:'security',label:'Segurança',icon:'shield'},{id:'stats',label:'Estatísticas',icon:'chart'}];
+function openAdmin(){document.getElementById('adminPanel').style.display='flex';renderAdmin()}
+function closeAdmin(){document.getElementById('adminPanel').style.display='none'}
+function setTab(t){adminTab=t;renderAdmin()}
+function renderAdmin(){
+  document.getElementById('adminSide').innerHTML=ADMIN_TABS.map(t=>`<button class="${adminTab===t.id?'active':''}" onclick="setTab('${t.id}')">${icon(t.icon,'icon icon-sm')} ${t.label}</button>`).join('');
+  const m=document.getElementById('adminMain');
+  if(adminTab==='posts'){
+    m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('plus','icon icon-sm')} Adicionar Conteúdo</h3>
+      <div class="form-grid">
+        <input id="dTitle" placeholder="Título">
+        <select id="dCat">${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+        <input id="dDate" type="date">
+        <input id="dLink" placeholder="Link (opcional)">
+        <textarea id="dDesc" placeholder="Descrição" rows="2"></textarea>
+      </div>
+      <button class="btn-add" onclick="addItem()">${icon('plus','icon icon-sm')} Adicionar</button>
+    </div>
+    <div class="admin-card"><h3>${icon('list','icon icon-sm')} Conteúdo (${items.length})</h3>
+      <div style="max-height:50vh;overflow-y:auto">${items.map(i=>`<div class="list-item"><div style="min-width:0;flex:1"><p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(i.title)}</p><p>${i.category} · ${esc(i.date||'')}</p></div><button class="btn-danger" onclick="removeItem('${i.id}')">${icon('trash','icon icon-sm')} Remover</button></div>`).join('')}</div>
+    </div>`;
+  } else if(adminTab==='users'){
+    m.innerHTML=`<div class="admin-card neon-border">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="margin:0">${icon('users','icon icon-sm')} Usuários (${users.length})</h3><button class="btn-add" style="margin:0" onclick="addUser()">${icon('plus','icon icon-sm')} Novo</button></div>
+      ${users.map(u=>`<div class="user-row"><div class="user-info"><div class="avatar${u.banned?' banned':''}">${esc(u.name[0]||'').toUpperCase()}</div><div><p style="font-size:14px;font-weight:600;color:var(--neon)">${esc(u.name)} ${u.banned?'<span style="color:var(--danger);font-size:12px">(banido)</span>':''}</p><p style="font-size:12px;color:var(--muted)">${u.role}</p></div></div><div class="user-actions"><select onchange="changeRole('${u.id}',this.value)"><option${u.role==='admin'?' selected':''}>admin</option><option${u.role==='editor'?' selected':''}>editor</option><option${u.role==='user'?' selected':''}>user</option></select><button class="btn-ban" onclick="toggleBan('${u.id}')">${u.banned?'Desbanir':'Banir'}</button><button class="btn-danger" onclick="removeUser('${u.id}')">${icon('trash','icon icon-sm')}</button></div></div>`).join('')}
+    </div>`;
+  } else if(adminTab==='security'){
+    const opts=[{k:'twoFactor',label:'Autenticação em 2 fatores',desc:'Segunda camada de proteção no login admin.'},{k:'loginAlerts',label:'Alertas de login',desc:'Notificar quando alguém acessar o painel.'},{k:'autoLock',label:'Bloqueio automático',desc:'Fechar o painel após inatividade.'},{k:'pinRotation',label:'Rotação de PIN',desc:'Sugerir troca de senha periodicamente.'}];
+    m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('shield','icon icon-sm')} Segurança</h3>${opts.map(o=>`<label class="security-row"><div><p>${o.label}</p><p>${o.desc}</p></div><input type="checkbox" ${sec[o.k]?'checked':''} onchange="sec['${o.k}']=this.checked;save()"></label>`).join('')}</div>`;
+  } else {
+    const stats=[{label:'Conteúdos',value:items.length,icon:'package'},{label:'Usuários',value:users.length,icon:'users'},{label:'Jogos',value:items.filter(i=>i.category==='jogos').length,icon:'gamepad'},{label:'Posts',value:items.filter(i=>i.category==='posts').length,icon:'file'}];
+    m.innerHTML=`<div class="stats-grid">${stats.map(s=>`<div class="stat-card">${icon(s.icon,'icon icon-lg')}<p class="val">${s.value}</p><p class="lbl">${s.label}</p></div>`).join('')}</div>`;
   }
+}
+
+function addItem(){const t=document.getElementById('dTitle').value.trim();if(!t)return;items.unshift({id:crypto.randomUUID(),title:t,category:document.getElementById('dCat').value,date:document.getElementById('dDate').value||new Date().toISOString().slice(0,10),link:document.getElementById('dLink').value,description:document.getElementById('dDesc').value});save();renderAdmin();renderMain()}
+function removeItem(id){items=items.filter(i=>i.id!==id);save();renderAdmin();renderMain()}
+function addUser(){const n=prompt('Nome do usuário:');if(!n)return;users.push({id:crypto.randomUUID(),name:n,role:'user'});save();renderAdmin()}
+function toggleBan(id){users=users.map(u=>u.id===id?{...u,banned:!u.banned}:u);save();renderAdmin()}
+function changeRole(id,r){users=users.map(u=>u.id===id?{...u,role:r}:u);save();renderAdmin()}
+function removeUser(id){users=users.filter(u=>u.id!==id);save();renderAdmin()}
+
+renderNav();renderChips();renderMain();
 </script>
-
 </body>
 </html>
