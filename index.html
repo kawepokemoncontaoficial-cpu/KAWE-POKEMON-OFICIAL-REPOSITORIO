@@ -20,7 +20,8 @@ svg{display:inline-block;vertical-align:middle}
 .icon-sm{width:14px;height:14px}
 .icon-lg{width:28px;height:28px}
 .icon-xl{width:44px;height:44px}
-header{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+body.menu-open{overflow:hidden}
+header{position:sticky;top:0;z-index:60;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 .header-inner{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .header-left{display:flex;align-items:center;gap:8px}
 .btn-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--neon);cursor:pointer;transition:.2s}
@@ -32,12 +33,23 @@ nav.desktop{display:none;gap:2px}
 @media(min-width:1024px){nav.desktop{display:flex}}
 nav.desktop button{padding:8px 10px;border-radius:6px;background:none;border:none;color:rgba(232,255,232,.8);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:.2s}
 nav.desktop button:hover{background:rgba(0,255,136,.1);color:var(--neon)}
-.menu-panel{border-top:1px solid var(--border);background:rgba(0,0,0,.95);display:none}
-.menu-panel.open{display:block}
-.menu-grid{max-width:1200px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
-@media(min-width:640px){.menu-grid{grid-template-columns:repeat(3,1fr)}}
+.menu-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.menu-overlay.open{opacity:1;pointer-events:auto}
+.menu-panel{position:fixed;left:0;top:0;bottom:0;width:290px;z-index:55;padding-top:76px;border-right:1px solid var(--border);background:rgba(0,0,0,.98);backdrop-filter:blur(12px);transform:translateX(-105%);transition:transform .25s ease;overflow-y:auto;box-shadow:10px 0 30px rgba(0,255,136,.15)}
+.menu-panel.open{transform:translateX(0)}
+.menu-grid{padding:16px;display:grid;grid-template-columns:1fr;gap:6px}
+.menu-grid button{justify-content:flex-start}
+.menu-panel::after{content:'NAVEGAÇÃO';display:block;position:absolute;top:22px;left:18px;color:var(--neon);font:10px 'Press Start 2P',sans-serif}
+@media(max-width:640px){.menu-panel{width:86vw;max-width:310px}}
 .menu-grid button{display:flex;align-items:center;gap:8px;padding:14px;border-radius:8px;border:1px solid rgba(0,255,136,.3);background:rgba(0,0,0,.6);color:var(--neon);font-weight:600;font-size:13px;text-align:left;cursor:pointer;transition:.2s}
 .menu-grid button:hover{border-color:var(--neon);box-shadow:0 0 12px var(--neon-soft)}
+.firebase-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.firebase-status.ok{color:var(--neon)}
+.firebase-status.bad{color:var(--danger)}
+.admin-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.btn-small{padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:rgba(0,0,0,.5);color:var(--neon);cursor:pointer;font-weight:700;font-size:12px}
+.btn-small:hover{background:rgba(0,255,136,.12)}
+.filter-admin{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.6);color:var(--text);outline:none;margin-bottom:10px}
 .hero{position:relative;padding:80px 16px;text-align:center;border-bottom:1px solid var(--border);overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;opacity:.3;background:radial-gradient(circle at 20% 30%,rgba(0,255,136,.4),transparent 40%),radial-gradient(circle at 80% 70%,rgba(0,200,120,.3),transparent 45%);pointer-events:none}
 .hero-content{max-width:1200px;margin:0 auto;position:relative}
@@ -140,6 +152,10 @@ footer .neon-text{margin:0 4px}
 .stat-card .val{margin-top:8px;font-family:'Press Start 2P',sans-serif;font-size:26px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft)}
 .stat-card .lbl{margin-top:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -179,8 +195,10 @@ footer .neon-text{margin:0 4px}
     <button class="brand" onclick="go('inicio')">KAWE POKEMON <svg class="icon icon-sm"><use href="#i-flame"/></svg></button>
     <nav class="desktop" id="navDesktop"></nav>
   </div>
-  <div class="menu-panel" id="menuPanel"><div class="menu-grid" id="menuGrid"></div></div>
 </header>
+
+<div class="menu-panel" id="menuPanel" aria-hidden="true"><div class="menu-grid" id="menuGrid"></div></div>
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
 
 <section id="inicio" class="hero">
   <div class="hero-content">
@@ -195,7 +213,7 @@ footer .neon-text{margin:0 4px}
 </section>
 
 <div class="search-bar">
-  <div class="search-inner">
+  <div class="search-inner"><span id="firebaseStatus" class="firebase-status bad">Firebase: aguardando</span>
     <div class="search-input"><svg class="icon"><use href="#i-search"/></svg><input id="searchInput" placeholder="Buscar..."></div>
     <div class="chips" id="chips"></div>
   </div>
@@ -213,6 +231,18 @@ footer .neon-text{margin:0 4px}
     <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" class="pin-input" id="pinInput" placeholder="----" autocomplete="off">
     <p class="pin-error" id="pinError" style="display:none">Senha incorreta</p>
     <button type="submit" class="pin-submit">ENTRAR</button>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="adminAuthModal" style="display:none" onclick="if(event.target===this)closeAdminAuth()">
+  <form class="pin-box" onsubmit="return submitAdminAuth(event)">
+    <div class="pin-icon"><svg class="icon icon-lg"><use href="#i-shield"/></svg></div>
+    <h3 class="pin-title">LOGIN FIREBASE</h3>
+    <p class="pin-sub">Entre com a conta administrativa do Firebase</p>
+    <input type="email" class="pin-input" style="font-family:inherit;font-size:15px;letter-spacing:0" id="adminEmail" value="kawe.pokemon.conta.oficial@gmail.com" autocomplete="username" required>
+    <input type="password" class="pin-input" style="font-family:inherit;font-size:15px;letter-spacing:0" id="adminPassword" placeholder="Senha do Firebase" autocomplete="current-password" required>
+    <p class="pin-error" id="adminAuthError" style="display:none">Não foi possível autenticar.</p>
+    <button type="submit" class="pin-submit">CONECTAR</button>
   </form>
 </div>
 
@@ -234,126 +264,48 @@ footer .neon-text{margin:0 4px}
 const NAV=[{id:'inicio',label:'Início'},{id:'sobre',label:'Sobre Nós'},{id:'creditos',label:'Créditos'},{id:'posts',label:'Posts'},{id:'filmes',label:'Filmes'},{id:'curtas',label:'Curtas'},{id:'jogos',label:'Jogos'},{id:'livros',label:'Livros'},{id:'desenhos',label:'Desenhos'},{id:'sites-alt',label:'Sites Alternativos'}];
 const CATS=['posts','filmes','curtas','jogos','livros','desenhos'];
 const ALT=[{name:'POKEBAT',url:'https://www.pokebat.com',desc:'Batalhas Pokémon online e comunidade PT-BR.'},{name:'DSPOKETUBER',url:'https://www.youtube.com/@DSPokeTuber',desc:'Canal dedicado a conteúdo Pokémon.'}];
-const DEFAULTS=[
-  {id:'1',title:'Pokémon Fire Red (PT-BR)',category:'jogos',date:'2004-01-29',description:'Clássico da geração 3, em português.',link:'https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file'},
-  {id:'2',title:'Pokémon Leaf Green (PT-BR)',category:'jogos',date:'2004-01-29',description:'A dupla verde do Fire Red.',link:'https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file'},
-  {id:'3',title:'Pokémon Emerald (PT-BR)',category:'jogos',date:'2005-01-01',description:'Hoenn completo, em português.',link:'https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file'},
-  {id:'4',title:'Pokémon Sapphire (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file'},
-  {id:'5',title:'Pokémon Ruby (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file'},
-  {id:'6',title:'Bem-vindo ao KAWE POKEMON!',category:'posts',date:'2026-01-01',description:'Novo portal repaginado com tema verde e preto.'}
-];
+const DEFAULTS=[{id:'1',title:'Pokémon Fire Red (PT-BR)',category:'jogos',date:'2004-01-29',description:'Clássico da geração 3, em português.',link:'https://www.mediafire.com/file/ipj30houhnd86i3/PK_FR_%252528PT-BR%252529.zip/file'},{id:'2',title:'Pokémon Leaf Green (PT-BR)',category:'jogos',date:'2004-01-29',description:'A dupla verde do Fire Red.',link:'https://www.mediafire.com/file/7esv9tqmlr1qwgj/LeafG-Portugues.heypikachu/file'},{id:'3',title:'Pokémon Emerald (PT-BR)',category:'jogos',date:'2005-01-01',description:'Hoenn completo, em português.',link:'https://www.mediafire.com/file/yu8hepmdc12xgmv/PK+EMR+(PT-BR).zip/file'},{id:'4',title:'Pokémon Sapphire (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/032wa4o5u5rczcq/Pokemon_Sapphire_PT-BR%25255BLukaBat%25255D.zip/file'},{id:'5',title:'Pokémon Ruby (PT-BR)',category:'jogos',date:'2002-01-01',link:'https://www.mediafire.com/file/omec55dogogzo9m/Ru3y_Portugues%5Bheypikachu.com%5D.HEYPIKACHU/file'},{id:'6',title:'Bem-vindo ao KAWE POKEMON!',category:'posts',date:'2026-01-01',description:'Novo portal repaginado com tema verde e preto.'}];
 const DEFAULT_USERS=[{id:'u1',name:'KAWE',role:'admin'},{id:'u2',name:'Ash',role:'user'},{id:'u3',name:'Misty',role:'editor'}];
 const PWD='2011';
-
-let items=JSON.parse(localStorage.getItem('kawe.items')||'null')||DEFAULTS;
-let users=JSON.parse(localStorage.getItem('kawe.users')||'null')||DEFAULT_USERS;
-let favs=JSON.parse(localStorage.getItem('kawe.favs')||'[]');
-let sec=JSON.parse(localStorage.getItem('kawe.sec')||'null')||{twoFactor:false,loginAlerts:true,autoLock:true,pinRotation:false};
-let search='',activeCat='all',adminTab='posts';
-
-function save(){localStorage.setItem('kawe.items',JSON.stringify(items));localStorage.setItem('kawe.users',JSON.stringify(users));localStorage.setItem('kawe.favs',JSON.stringify(favs));localStorage.setItem('kawe.sec',JSON.stringify(sec))}
-function icon(id,cls='icon'){return `<svg class="${cls}"><use href="#i-${id}"/></svg>`}
-function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-function go(id){document.getElementById('menuPanel').classList.remove('open');document.getElementById('menuIcon').outerHTML='<svg class="icon" id="menuIcon"><use href="#i-menu"/></svg>';const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'})}
-
-function renderNav(){
-  document.getElementById('navDesktop').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${s.label}</button>`).join('');
-  document.getElementById('menuGrid').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${icon('chevron-right','icon icon-sm')} ${s.label}</button>`).join('');
-}
-function renderChips(){
-  const cats=['all',...CATS];
-  document.getElementById('chips').innerHTML=cats.map(c=>`<button class="chip${activeCat===c?' active':''}" onclick="setCat('${c}')">${c==='all'?'Todos':cap(c)}</button>`).join('');
-}
+const firebaseConfig={apiKey:'AIzaSyCpKplpVhlMFh1wOCiBqjDqRrV8ypcsb6c',authDomain:'kawe-pokemon-oficial.firebaseapp.com',databaseURL:'https://kawe-pokemon-oficial-default-rtdb.firebaseio.com',projectId:'kawe-pokemon-oficial',storageBucket:'kawe-pokemon-oficial.firebasestorage.app',messagingSenderId:'165874661260',appId:'1:165874661260:web:ed43124308022f74be48a9',measurementId:'G-TXR376G7QD'};
+let items=JSON.parse(localStorage.getItem('kawe.items')||'null')||DEFAULTS,users=JSON.parse(localStorage.getItem('kawe.users')||'null')||DEFAULT_USERS,favs=JSON.parse(localStorage.getItem('kawe.favs')||'[]'),sec=JSON.parse(localStorage.getItem('kawe.sec')||'null')||{twoFactor:false,loginAlerts:true,autoLock:true,pinRotation:false};
+let search='',activeCat='all',adminTab='posts',adminFilter='',firebaseUser=null,db=null,firebaseReady=false;
+function setFirebaseStatus(text,kind=''){const el=document.getElementById('firebaseStatus');if(el){el.textContent=text;el.className='firebase-status '+kind}}
+function localSave(){localStorage.setItem('kawe.items',JSON.stringify(items));localStorage.setItem('kawe.users',JSON.stringify(users));localStorage.setItem('kawe.favs',JSON.stringify(favs));localStorage.setItem('kawe.sec',JSON.stringify(sec))}
+function save(){localSave();if(firebaseReady&&firebaseUser&&db){setFirebaseStatus('Salvando no Firebase...');return db.ref().update({content:items,users,settings:sec,favorites:favs}).then(()=>setFirebaseStatus('Firebase conectado','ok')).catch(e=>{setFirebaseStatus('Firebase bloqueado pelas regras','bad');console.warn(e)})}return Promise.resolve()}
+function icon(id,cls='icon'){return `<svg class="${cls}"><use href="#i-${id}"/></svg>`} function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)} function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function closeMenu(){document.getElementById('menuPanel').classList.remove('open');document.getElementById('menuOverlay').classList.remove('open');document.body.classList.remove('menu-open');document.getElementById('menuBtn').setAttribute('aria-expanded','false');document.getElementById('menuPanel').setAttribute('aria-hidden','true');document.getElementById('menuOverlay').setAttribute('aria-hidden','true');document.getElementById('menuIcon').outerHTML='<svg class="icon" id="menuIcon"><use href="#i-menu"/></svg>'}
+function toggleMenu(){const open=!document.getElementById('menuPanel').classList.contains('open');if(open){document.getElementById('menuPanel').classList.add('open');document.getElementById('menuOverlay').classList.add('open');document.body.classList.add('menu-open');document.getElementById('menuBtn').setAttribute('aria-expanded','true');document.getElementById('menuPanel').setAttribute('aria-hidden','false');document.getElementById('menuOverlay').setAttribute('aria-hidden','false');document.getElementById('menuIcon').outerHTML='<svg class="icon" id="menuIcon"><use href="#i-x"/></svg>'}else closeMenu()}
+function go(id){closeMenu();const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+function renderNav(){document.getElementById('navDesktop').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${s.label}</button>`).join('');document.getElementById('menuGrid').innerHTML=NAV.map(s=>`<button onclick="go('${s.id}')">${icon('chevron-right','icon icon-sm')} ${s.label}</button>`).join('')}
+function renderChips(){document.getElementById('chips').innerHTML=['all',...CATS].map(c=>`<button class="chip${activeCat===c?' active':''}" onclick="setCat('${c}')">${c==='all'?'Todos':cap(c)}</button>`).join('')}
 function setCat(c){activeCat=c;renderChips();renderMain()}
-
-function itemCard(i){
-  const isFav=favs.includes(i.id);
-  return `<article class="card">
-    <div class="card-head">
-      <h3 class="card-title">${esc(i.title)}</h3>
-      <button class="star-btn${isFav?' fav':''}" onclick="toggleFav('${i.id}')" aria-label="Favoritar">${icon('star')}</button>
-    </div>
-    ${i.date?`<p class="card-meta">${icon('calendar','icon icon-sm')} ${esc(i.date)}</p>`:''}
-    ${i.description?`<p class="card-desc">${esc(i.description)}</p>`:''}
-    ${i.link?`<a class="card-link" href="${esc(i.link)}" target="_blank" rel="noopener">${icon('download','icon icon-sm')} Abrir</a>`:''}
-  </article>`;
-}
-
+function itemCard(i){return `<article class="card"><div class="card-head"><h3 class="card-title">${esc(i.title)}</h3><button class="star-btn${favs.includes(i.id)?' fav':''}" onclick="toggleFav('${i.id}')" aria-label="Favoritar">${icon('star')}</button></div>${i.date?`<p class="card-meta">${icon('calendar','icon icon-sm')} ${esc(i.date)}</p>`:''}${i.description?`<p class="card-desc">${esc(i.description)}</p>`:''}${i.link?`<a class="card-link" href="${esc(i.link)}" target="_blank" rel="noopener">${icon('download','icon icon-sm')} Abrir</a>`:''}</article>`}
 function toggleFav(id){favs=favs.includes(id)?favs.filter(f=>f!==id):[...favs,id];save();renderMain()}
-
-function renderMain(){
-  const q=search.toLowerCase().trim();
-  const filtered=items.filter(i=>(activeCat==='all'||i.category===activeCat)&&(!q||i.title.toLowerCase().includes(q)||(i.description||'').toLowerCase().includes(q)));
-  let html='';
-  for(const cat of CATS){
-    if(activeCat!=='all'&&activeCat!==cat)continue;
-    const list=filtered.filter(i=>i.category===cat);
-    html+=`<section id="${cat}"><div class="section-head"><h2>${cap(cat)}</h2><span>${list.length} itens</span></div>`;
-    if(list.length===0)html+=`<p style="color:var(--muted);font-size:14px">Nada por aqui ainda.</p>`;
-    else html+=`<div class="grid${cat==='jogos'?' games':''}">${list.map(itemCard).join('')}</div>`;
-    html+='</section>';
-  }
-  html+=`<section id="sites-alt"><div class="section-head"><h2>${icon('globe','icon icon-lg')} Sites Alternativos</h2><span>${ALT.length} sites</span></div><div class="grid">${ALT.map(s=>`<a class="card alt-card" href="${s.url}" target="_blank" rel="noopener"><div class="card-head"><h3 class="card-title">${icon('globe','icon icon-sm')} ${s.name}</h3>${icon('external','icon icon-sm')}</div><p class="card-desc">${s.desc}</p><span class="card-meta" style="margin-top:12px">${s.url}</span></a>`).join('')}</div></section>`;
-  html+=`<section id="sobre"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:16px">Sobre Nós</h2><div class="about-card neon-border"><p style="font-size:14px;line-height:1.6">O <strong style="color:var(--neon)">KAWE POKEMON</strong> é um portal fã dedicado a compartilhar a paixão pelo universo Pokémon: jogos traduzidos, filmes, curtas, livros e desenhos. Feito por fãs, para fãs.</p></div></section>`;
-  html+=`<section id="creditos"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);margin-bottom:16px">Créditos</h2><div class="grid"><div class="about-card"><h3 style="font-family:'Press Start 2P';font-size:12px;color:var(--neon);margin-bottom:8px">Criação</h3><p style="font-size:14px">KAWE — idealizador e curador.</p></div><div class="about-card"><h3 style="font-family:'Press Start 2P';font-size:12px;color:var(--neon);margin-bottom:8px">Fontes</h3><p style="font-size:14px">Comunidade Pokémon PT-BR e colaboradores.</p></div></div></section>`;
-  document.getElementById('mainContent').innerHTML=html;
-}
-
-document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value;renderMain()});
-document.getElementById('menuBtn').addEventListener('click',()=>{
-  const p=document.getElementById('menuPanel');const open=p.classList.toggle('open');
-  document.getElementById('menuIcon').outerHTML=`<svg class="icon" id="menuIcon"><use href="#i-${open?'x':'menu'}"/></svg>`;
-});
-
-function openPin(){document.getElementById('pinModal').style.display='flex';setTimeout(()=>document.getElementById('pinInput').focus(),50)}
-function closePin(){document.getElementById('pinModal').style.display='none';document.getElementById('pinInput').value='';document.getElementById('pinError').style.display='none'}
-function submitPin(e){e.preventDefault();const v=document.getElementById('pinInput').value;if(v===PWD){closePin();openAdmin()}else{document.getElementById('pinError').style.display='block';document.getElementById('pinInput').value=''}return false}
-
-const ADMIN_TABS=[{id:'posts',label:'Conteúdo',icon:'file'},{id:'users',label:'Usuários',icon:'users'},{id:'security',label:'Segurança',icon:'shield'},{id:'stats',label:'Estatísticas',icon:'chart'}];
-function openAdmin(){document.getElementById('adminPanel').style.display='flex';renderAdmin()}
-function closeAdmin(){document.getElementById('adminPanel').style.display='none'}
-function setTab(t){adminTab=t;renderAdmin()}
-function renderAdmin(){
-  document.getElementById('adminSide').innerHTML=ADMIN_TABS.map(t=>`<button class="${adminTab===t.id?'active':''}" onclick="setTab('${t.id}')">${icon(t.icon,'icon icon-sm')} ${t.label}</button>`).join('');
-  const m=document.getElementById('adminMain');
-  if(adminTab==='posts'){
-    m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('plus','icon icon-sm')} Adicionar Conteúdo</h3>
-      <div class="form-grid">
-        <input id="dTitle" placeholder="Título">
-        <select id="dCat">${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
-        <input id="dDate" type="date">
-        <input id="dLink" placeholder="Link (opcional)">
-        <textarea id="dDesc" placeholder="Descrição" rows="2"></textarea>
-      </div>
-      <button class="btn-add" onclick="addItem()">${icon('plus','icon icon-sm')} Adicionar</button>
-    </div>
-    <div class="admin-card"><h3>${icon('list','icon icon-sm')} Conteúdo (${items.length})</h3>
-      <div style="max-height:50vh;overflow-y:auto">${items.map(i=>`<div class="list-item"><div style="min-width:0;flex:1"><p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(i.title)}</p><p>${i.category} · ${esc(i.date||'')}</p></div><button class="btn-danger" onclick="removeItem('${i.id}')">${icon('trash','icon icon-sm')} Remover</button></div>`).join('')}</div>
-    </div>`;
-  } else if(adminTab==='users'){
-    m.innerHTML=`<div class="admin-card neon-border">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="margin:0">${icon('users','icon icon-sm')} Usuários (${users.length})</h3><button class="btn-add" style="margin:0" onclick="addUser()">${icon('plus','icon icon-sm')} Novo</button></div>
-      ${users.map(u=>`<div class="user-row"><div class="user-info"><div class="avatar${u.banned?' banned':''}">${esc(u.name[0]||'').toUpperCase()}</div><div><p style="font-size:14px;font-weight:600;color:var(--neon)">${esc(u.name)} ${u.banned?'<span style="color:var(--danger);font-size:12px">(banido)</span>':''}</p><p style="font-size:12px;color:var(--muted)">${u.role}</p></div></div><div class="user-actions"><select onchange="changeRole('${u.id}',this.value)"><option${u.role==='admin'?' selected':''}>admin</option><option${u.role==='editor'?' selected':''}>editor</option><option${u.role==='user'?' selected':''}>user</option></select><button class="btn-ban" onclick="toggleBan('${u.id}')">${u.banned?'Desbanir':'Banir'}</button><button class="btn-danger" onclick="removeUser('${u.id}')">${icon('trash','icon icon-sm')}</button></div></div>`).join('')}
-    </div>`;
-  } else if(adminTab==='security'){
-    const opts=[{k:'twoFactor',label:'Autenticação em 2 fatores',desc:'Segunda camada de proteção no login admin.'},{k:'loginAlerts',label:'Alertas de login',desc:'Notificar quando alguém acessar o painel.'},{k:'autoLock',label:'Bloqueio automático',desc:'Fechar o painel após inatividade.'},{k:'pinRotation',label:'Rotação de PIN',desc:'Sugerir troca de senha periodicamente.'}];
-    m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('shield','icon icon-sm')} Segurança</h3>${opts.map(o=>`<label class="security-row"><div><p>${o.label}</p><p>${o.desc}</p></div><input type="checkbox" ${sec[o.k]?'checked':''} onchange="sec['${o.k}']=this.checked;save()"></label>`).join('')}</div>`;
-  } else {
-    const stats=[{label:'Conteúdos',value:items.length,icon:'package'},{label:'Usuários',value:users.length,icon:'users'},{label:'Jogos',value:items.filter(i=>i.category==='jogos').length,icon:'gamepad'},{label:'Posts',value:items.filter(i=>i.category==='posts').length,icon:'file'}];
-    m.innerHTML=`<div class="stats-grid">${stats.map(s=>`<div class="stat-card">${icon(s.icon,'icon icon-lg')}<p class="val">${s.value}</p><p class="lbl">${s.label}</p></div>`).join('')}</div>`;
-  }
-}
-
-function addItem(){const t=document.getElementById('dTitle').value.trim();if(!t)return;items.unshift({id:crypto.randomUUID(),title:t,category:document.getElementById('dCat').value,date:document.getElementById('dDate').value||new Date().toISOString().slice(0,10),link:document.getElementById('dLink').value,description:document.getElementById('dDesc').value});save();renderAdmin();renderMain()}
-function removeItem(id){items=items.filter(i=>i.id!==id);save();renderAdmin();renderMain()}
-function addUser(){const n=prompt('Nome do usuário:');if(!n)return;users.push({id:crypto.randomUUID(),name:n,role:'user'});save();renderAdmin()}
-function toggleBan(id){users=users.map(u=>u.id===id?{...u,banned:!u.banned}:u);save();renderAdmin()}
-function changeRole(id,r){users=users.map(u=>u.id===id?{...u,role:r}:u);save();renderAdmin()}
-function removeUser(id){users=users.filter(u=>u.id!==id);save();renderAdmin()}
-
-renderNav();renderChips();renderMain();
+function renderMain(){const q=search.toLowerCase().trim(),filtered=items.filter(i=>(activeCat==='all'||i.category===activeCat)&&(!q||[i.title,i.description,i.category,i.date,i.link].some(v=>String(v||'').toLowerCase().includes(q))));let html='';for(const cat of CATS){if(activeCat!=='all'&&activeCat!==cat)continue;const list=filtered.filter(i=>i.category===cat);html+=`<section id="${cat}"><div class="section-head"><h2>${cap(cat)}</h2><span>${list.length} itens</span></div>${list.length?`<div class="grid${cat==='jogos'?' games':''}">${list.map(itemCard).join('')}</div>`:`<p style="color:var(--muted);font-size:14px">Nada por aqui ainda.</p>`}</section>`}html+=`<section id="sites-alt"><div class="section-head"><h2>${icon('globe','icon icon-lg')} Sites Alternativos</h2><span>${ALT.length} sites</span></div><div class="grid">${ALT.map(s=>`<a class="card alt-card" href="${s.url}" target="_blank" rel="noopener"><div class="card-head"><h3 class="card-title">${icon('globe','icon icon-sm')} ${s.name}</h3>${icon('external','icon icon-sm')}</div><p class="card-desc">${s.desc}</p><span class="card-meta" style="margin-top:12px">${s.url}</span></a>`).join('')}</div></section><section id="sobre"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);margin-bottom:16px">Sobre Nós</h2><div class="about-card neon-border"><p style="font-size:14px;line-height:1.6">O <strong style="color:var(--neon)">KAWE POKEMON</strong> é um portal fã dedicado a compartilhar a paixão pelo universo Pokémon: jogos traduzidos, filmes, curtas, livros e desenhos.</p></div></section><section id="creditos"><h2 style="font-family:'Press Start 2P';font-size:20px;color:var(--neon);margin-bottom:16px">Créditos</h2><div class="grid"><div class="about-card"><h3 style="color:var(--neon);margin-bottom:8px">Criação</h3><p style="font-size:14px">KAWE — idealizador e curador.</p></div><div class="about-card"><h3 style="color:var(--neon);margin-bottom:8px">Fontes</h3><p style="font-size:14px">Comunidade Pokémon PT-BR e colaboradores.</p></div></div></section>`;document.getElementById('mainContent').innerHTML=html}
+document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value;renderMain()});document.getElementById('menuBtn').setAttribute('aria-expanded','false');document.getElementById('menuBtn').addEventListener('click',toggleMenu);document.getElementById('menuOverlay').addEventListener('click',closeMenu);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+function openPin(){document.getElementById('pinModal').style.display='flex';setTimeout(()=>document.getElementById('pinInput').focus(),50)} function closePin(){document.getElementById('pinModal').style.display='none';document.getElementById('pinInput').value='';document.getElementById('pinError').style.display='none'}
+function submitPin(e){e.preventDefault();if(document.getElementById('pinInput').value===PWD){closePin();openAdminAuth()}else{document.getElementById('pinError').style.display='block';document.getElementById('pinInput').value=''}return false}
+function openAdminAuth(){document.getElementById('adminAuthModal').style.display='flex';setTimeout(()=>document.getElementById('adminPassword').focus(),50)}function closeAdminAuth(){document.getElementById('adminAuthModal').style.display='none';document.getElementById('adminPassword').value=''}
+function submitAdminAuth(e){e.preventDefault();const email=document.getElementById('adminEmail').value.trim(),pass=document.getElementById('adminPassword').value;firebase.auth().signInWithEmailAndPassword(email,pass).then(()=>{closeAdminAuth();openAdmin()}).catch(()=>{document.getElementById('adminAuthError').style.display='block'});return false}
+const ADMIN_TABS=[{id:'posts',label:'Conteúdo',icon:'file'},{id:'users',label:'Usuários',icon:'users'},{id:'security',label:'Segurança',icon:'shield'},{id:'stats',label:'Estatísticas',icon:'chart'},{id:'firebase',label:'Firebase',icon:'globe'}];
+function openAdmin(){document.getElementById('adminPanel').style.display='flex';renderAdmin()}function closeAdmin(){document.getElementById('adminPanel').style.display='none'}function setTab(t){adminTab=t;renderAdmin()}
+function renderAdmin(){document.getElementById('adminSide').innerHTML=ADMIN_TABS.map(t=>`<button class="${adminTab===t.id?'active':''}" onclick="setTab('${t.id}')">${icon(t.icon,'icon icon-sm')} ${t.label}</button>`).join('');const m=document.getElementById('adminMain');
+if(adminTab==='posts'){const list=items.filter(i=>[i.title,i.category,i.description].some(v=>String(v||'').toLowerCase().includes(adminFilter.toLowerCase())));m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('plus','icon icon-sm')} Adicionar Conteúdo</h3><div class="form-grid"><input id="dTitle" placeholder="Título"><select id="dCat">${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}</select><input id="dDate" type="date"><input id="dLink" placeholder="Link (opcional)"><textarea id="dDesc" placeholder="Descrição" rows="2"></textarea></div><button class="btn-add" onclick="addItem()">${icon('plus','icon icon-sm')} Adicionar</button></div><div class="admin-card"><h3>${icon('list','icon icon-sm')} Conteúdo (${items.length})</h3><input class="filter-admin" value="${esc(adminFilter)}" oninput="adminFilter=this.value;renderAdmin()" placeholder="Filtrar título, categoria ou descrição..."><div class="admin-tools"><button class="btn-small" onclick="exportData()">Exportar backup</button><button class="btn-small" onclick="syncNow()">Sincronizar agora</button></div><div style="max-height:50vh;overflow-y:auto">${list.map(i=>`<div class="list-item"><div style="min-width:0;flex:1"><p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(i.title)}</p><p>${i.category} · ${esc(i.date||'')}</p></div><button class="btn-small" onclick="editItem('${i.id}')">Editar</button><button class="btn-danger" onclick="removeItem('${i.id}')">${icon('trash','icon icon-sm')} Remover</button></div>`).join('')}</div></div>`}
+else if(adminTab==='users'){m.innerHTML=`<div class="admin-card neon-border"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="margin:0">${icon('users','icon icon-sm')} Usuários (${users.length})</h3><button class="btn-add" style="margin:0" onclick="addUser()">${icon('plus','icon icon-sm')} Novo</button></div>${users.map(u=>`<div class="user-row"><div class="user-info"><div class="avatar${u.banned?' banned':''}">${esc(u.name[0]||'').toUpperCase()}</div><div><p style="font-size:14px;font-weight:600;color:var(--neon)">${esc(u.name)} ${u.banned?'<span style="color:var(--danger);font-size:12px">(banido)</span>':''}</p><p style="font-size:12px;color:var(--muted)">${u.role}</p></div></div><div class="user-actions"><select onchange="changeRole('${u.id}',this.value)"><option${u.role==='admin'?' selected':''}>admin</option><option${u.role==='editor'?' selected':''}>editor</option><option${u.role==='user'?' selected':''}>user</option></select><button class="btn-ban" onclick="toggleBan('${u.id}')">${u.banned?'Desbanir':'Banir'}</button><button class="btn-danger" onclick="removeUser('${u.id}')">${icon('trash','icon icon-sm')}</button></div></div>`).join('')}</div>`}
+else if(adminTab==='security'){const opts=[{k:'twoFactor',label:'Autenticação em 2 fatores',desc:'Segunda camada de proteção no login admin.'},{k:'loginAlerts',label:'Alertas de login',desc:'Notificar quando alguém acessar o painel.'},{k:'autoLock',label:'Bloqueio automático',desc:'Fechar o painel após inatividade.'},{k:'pinRotation',label:'Rotação de PIN',desc:'Sugerir troca de senha periodicamente.'}];m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('shield','icon icon-sm')} Segurança</h3>${opts.map(o=>`<label class="security-row"><div><p>${o.label}</p><p>${o.desc}</p></div><input type="checkbox" ${sec[o.k]?'checked':''} onchange="sec['${o.k}']=this.checked;save()"></label>`).join('')}</div>`}
+else if(adminTab==='firebase'){m.innerHTML=`<div class="admin-card neon-border"><h3>${icon('globe','icon icon-sm')} Conexão Firebase</h3><p id="firebaseStatus" class="firebase-status ${firebaseReady?'ok':'bad'}">${firebaseReady?'Firebase conectado':'Aguardando autenticação ou regras do banco'}</p><p style="margin-top:14px;color:var(--muted);font-size:13px;line-height:1.6">O painel usa o Realtime Database para conteúdo, usuários, favoritos e configurações. As regras atuais recebidas estão com leitura e escrita bloqueadas; nesse estado, o site mantém um cache local e informa o bloqueio sem perder as alterações locais.</p><div class="admin-tools" style="margin-top:16px"><button class="btn-small" onclick="syncNow()">Tentar conexão</button><button class="btn-small" onclick="signOutFirebase()">Sair do Firebase</button></div></div>`}
+else{const stats=[{label:'Conteúdos',value:items.length,icon:'package'},{label:'Usuários',value:users.length,icon:'users'},{label:'Jogos',value:items.filter(i=>i.category==='jogos').length,icon:'gamepad'},{label:'Posts',value:items.filter(i=>i.category==='posts').length,icon:'file'}];m.innerHTML=`<div class="stats-grid">${stats.map(s=>`<div class="stat-card">${icon(s.icon,'icon icon-lg')}<p class="val">${s.value}</p><p class="lbl">${s.label}</p></div>`).join('')}</div>`}}
+function addItem(){const t=document.getElementById('dTitle').value.trim();if(!t)return;items.unshift({id:crypto.randomUUID(),title:t,category:document.getElementById('dCat').value,date:document.getElementById('dDate').value||new Date().toISOString().slice(0,10),link:document.getElementById('dLink').value.trim(),description:document.getElementById('dDesc').value.trim()});save();renderAdmin();renderMain()}
+function editItem(id){const i=items.find(x=>x.id===id);if(!i)return;const title=prompt('Título:',i.title);if(!title)return;i.title=title.trim();i.description=prompt('Descrição:',i.description||'')||'';i.link=prompt('Link:',i.link||'')||'';save();renderAdmin();renderMain()}
+function removeItem(id){if(!confirm('Remover este conteúdo?'))return;items=items.filter(i=>i.id!==id);save();renderAdmin();renderMain()}
+function addUser(){const n=prompt('Nome do usuário:');if(!n)return;users.push({id:crypto.randomUUID(),name:n.trim(),role:'user'});save();renderAdmin()}
+function toggleBan(id){users=users.map(u=>u.id===id?{...u,banned:!u.banned}:u);save();renderAdmin()}function changeRole(id,r){users=users.map(u=>u.id===id?{...u,role:r}:u);save();renderAdmin()}function removeUser(id){if(!confirm('Remover este usuário?'))return;users=users.filter(u=>u.id!==id);save();renderAdmin()}
+function exportData(){const blob=new Blob([JSON.stringify({content:items,users,settings:sec,favorites:favs},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kawe-pokemon-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function syncNow(){if(firebaseReady&&firebaseUser){save();return}setFirebaseStatus('Faça login no Firebase para sincronizar','bad');alert('Conecte-se com a conta Firebase no painel admin para sincronizar.')}
+function signOutFirebase(){firebase.auth().signOut().then(()=>{firebaseUser=null;firebaseReady=false;setFirebaseStatus('Desconectado','bad')})}
+function initFirebase(){try{firebase.initializeApp(firebaseConfig);db=firebase.database();firebase.auth().onAuthStateChanged(user=>{firebaseUser=user;firebaseReady=!!user;if(user){setFirebaseStatus('Firebase conectado','ok');db.ref().on('value',snap=>{const d=snap.val()||{};if(Array.isArray(d.content))items=d.content;if(Array.isArray(d.users))users=d.users;if(Array.isArray(d.favorites))favs=d.favorites;if(d.settings)sec={...sec,...d.settings};localSave();renderMain();if(document.getElementById('adminPanel').style.display==='flex')renderAdmin()},()=>setFirebaseStatus('Firebase bloqueado pelas regras','bad'))}else setFirebaseStatus('Faça login para sincronizar','bad')})}catch(e){setFirebaseStatus('Firebase indisponível','bad');console.warn(e)}}
+renderNav();renderChips();renderMain();initFirebase();
 </script>
 </body>
 </html>
